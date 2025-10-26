@@ -1,6 +1,10 @@
 ---
-// นำเข้าไฟล์ CSS ส่วนกลางเพื่อใช้สไตล์ร่วมกันทั้งเว็บไซต์
-import "../global.css";
+// นำเข้า Layout จากโฟลเดอร์ layouts
+import Layout from "../layouts/Layout.astro";
+
+// นำเข้าโมดูล image จาก astro:assets
+import { Image } from "astro:assets";
+
 // นำเข้าฟังก์ชันสำหรับดึงข้อมูลบทความทั้งหมดจาก Notion
 import { getAllPosts } from "../lib/notion";
 
@@ -9,59 +13,79 @@ import { getAllPosts } from "../lib/notion";
 const posts = await getAllPosts();
 ---
 
-<!-- ส่วนด้านล่างนี้คือ Template ของหน้าเว็บ (HTML) -->
-<html lang="th">
-  <head>
-    <meta charset="utf-8" />
-    <title>บทความทั้งหมด | Astro + Notion (2025-09-03)</title>
-  </head>
-  <body class="p-8 font-sans">
-    <h1 class="text-3xl font-bold mb-6">บทความทั้งหมด</h1>
+<Layout>
+  <section id="hero">
+    <div
+      class="px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32"
+    >
+      <div class="mx-auto max-w-prose text-center">
+        <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">
+          Astro with
+          <strong class="text-indigo-600"> Notion CMS </strong>
+        </h1>
 
-    <!-- สร้างรายการ (list) ของบทความ -->
-    <ul class="space-y-6">
-      <!-- วนลูปข้อมูลในตัวแปร posts ที่ดึงมาจาก Notion -->
-      <!-- เพื่อแสดงผลบทความแต่ละรายการ -->
-      {posts.map((post) => (
-        <li class="border-b border-gray-200 pb-4">
-          <!-- สร้างลิงก์ไปยังหน้ารายละเอียดของบทความแต่ละเรื่อง -->
+        <p class="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque, nisi.
+          Natus, provident accusamus impedit minima harum corporis iusto.
+        </p>
+
+        <div class="mt-4 flex justify-center gap-4 sm:mt-6">
           <a
-            class="text-xl font-semibold text-blue-600 hover:underline"
-            href={`/blog/${post.slug}`}
+            class="inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-3 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
+            href="#"
           >
-            <!-- แสดงภาพปกของบทความ -->
-            <img
-              src={post.cover}
-              alt={post.title}
-              class="w-full h-48 object-cover mb-2 rounded"
-            />
-            <!-- แสดงชื่อเรื่องของบทความ -->
-            {post.title}
+            Get Started
           </a>
 
-          <!-- แสดงวันที่สร้างบทความ โดยจัดรูปแบบเป็นภาษาไทย -->
-          <div class="text-sm text-gray-500 mt-1">
-            {new Date(post.created).toLocaleString("th-TH", {
-              dateStyle: "long",
-              timeStyle: "short",
-            })}
-          </div>
+          <a
+            class="inline-block rounded border border-gray-200 px-5 py-3 font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+            href="#"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <!-- แสดงแท็ก (tags) ของบทความ -->
-          <div class="mt-2 flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <span class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700">
-                {tag}
-              </span>
-            ))}
-          </div>
+  <div class="grid gap-8 md:grid-cols-3 mb-12">
+    {
+      posts.map((post) => (
+        <article class="overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg">
+          <Image
+            src={post.cover}
+            alt={post.title}
+            width={400}
+            height={250}
+            loading={"eager"}
+            class="h-56 w-full object-cover"
+          />
 
-          <!-- แสดงคำอธิบายสั้นๆ (description) ของบทความ -->
-          <p class="text-gray-700 text-sm mt-3 leading-relaxed">
-            {post.description}
-          </p>
-        </li>
-      ))}
-    </ul>
-  </body>
-</html>
+          <div class="bg-white p-4 sm:p-6">
+            <time datetime="2022-10-10" class="block text-xs text-gray-500">
+              {new Date(post.created).toLocaleString("th-TH", {
+                dateStyle: "long",
+                timeStyle: "short",
+              })}
+            </time>
+
+            <a href={`/blog/${post.slug}`}>
+              <h3 class="mt-0.5 text-lg text-gray-900">{post.title}</h3>
+            </a>
+
+            <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+              {post.description}
+            </p>
+            <div class="flex flex-row flex-wrap gap-1.5 mt-2">
+              {post.tags.map((tag) => (
+                <span class="text-sm bg-neutral-200 rounded-2xl px-3 text-neutral-800">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</Layout>

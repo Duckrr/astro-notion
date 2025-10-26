@@ -1,1 +1,30 @@
 @import "tailwindcss";
+@import '@fontsource/ibm-plex-sans-thai/400.css';
+@import '@fontsource/ibm-plex-sans-thai/700.css';
+
+@theme {
+  --font-display: "IBM Plex Sans Thai", "sans-serif";
+
+  --color-primary: #212121;
+  --color-secondary: #848484;
+
+  --shadow-box: 4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply leading-normal font-display scroll-smooth text-secondary;
+  }
+  h1 {
+    @apply text-3xl lg:text-5xl font-bold text-primary;
+  }
+  h2 {
+    @apply text-3xl lg:text-4xl font-bold text-primary;
+  }
+  h3 {
+    @apply text-2xl lg:text-3xl font-bold text-primary;
+  }
+  .container {
+    @apply mx-auto max-w-5xl;
+  }
+}
