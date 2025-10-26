@@ -1,0 +1,67 @@
+---
+// นำเข้าไฟล์ CSS ส่วนกลางเพื่อใช้สไตล์ร่วมกันทั้งเว็บไซต์
+import "../global.css";
+// นำเข้าฟังก์ชันสำหรับดึงข้อมูลบทความทั้งหมดจาก Notion
+import { getAllPosts } from "../lib/notion";
+
+// เรียกใช้ฟังก์ชัน getAllPosts เพื่อดึงข้อมูลบทความทั้งหมด
+// และเก็บผลลัพธ์ไว้ในตัวแปร posts
+const posts = await getAllPosts();
+---
+
+<!-- ส่วนด้านล่างนี้คือ Template ของหน้าเว็บ (HTML) -->
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <title>บทความทั้งหมด | Astro + Notion (2025-09-03)</title>
+  </head>
+  <body class="p-8 font-sans">
+    <h1 class="text-3xl font-bold mb-6">บทความทั้งหมด</h1>
+
+    <!-- สร้างรายการ (list) ของบทความ -->
+    <ul class="space-y-6">
+      <!-- วนลูปข้อมูลในตัวแปร posts ที่ดึงมาจาก Notion -->
+      <!-- เพื่อแสดงผลบทความแต่ละรายการ -->
+      {posts.map((post) => (
+        <li class="border-b border-gray-200 pb-4">
+          <!-- สร้างลิงก์ไปยังหน้ารายละเอียดของบทความแต่ละเรื่อง -->
+          <a
+            class="text-xl font-semibold text-blue-600 hover:underline"
+            href={`/blog/${post.slug}`}
+          >
+            <!-- แสดงภาพปกของบทความ -->
+            <img
+              src={post.cover}
+              alt={post.title}
+              class="w-full h-48 object-cover mb-2 rounded"
+            />
+            <!-- แสดงชื่อเรื่องของบทความ -->
+            {post.title}
+          </a>
+
+          <!-- แสดงวันที่สร้างบทความ โดยจัดรูปแบบเป็นภาษาไทย -->
+          <div class="text-sm text-gray-500 mt-1">
+            {new Date(post.created).toLocaleString("th-TH", {
+              dateStyle: "long",
+              timeStyle: "short",
+            })}
+          </div>
+
+          <!-- แสดงแท็ก (tags) ของบทความ -->
+          <div class="mt-2 flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <span class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <!-- แสดงคำอธิบายสั้นๆ (description) ของบทความ -->
+          <p class="text-gray-700 text-sm mt-3 leading-relaxed">
+            {post.description}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

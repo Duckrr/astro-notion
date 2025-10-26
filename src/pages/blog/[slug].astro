@@ -1,0 +1,131 @@
+---
+// นำเข้าไฟล์ CSS ส่วนกลาง
+import "../../global.css";
+// นำเข้า Type Definition สำหรับ GetStaticPaths จาก Astro
+import type { GetStaticPaths } from 'astro';
+// นำเข้าฟังก์ชันสำหรับดึงข้อมูลโพสต์ทั้งหมดจาก Notion
+import { getAllPosts } from '../../lib/notion';
+// นำเข้าฟังก์ชันสำหรับแปลงบล็อกของ Notion เป็น HTML
+import { renderBlocksToHtml } from '../../lib/renderNotionBlocks';
+// นำเข้าฟังก์ชันสำหรับดึงบล็อกทั้งหมดแบบเจาะลึก (รวมบล็อกลูก)
+import { getBlocksDeep } from "../../lib/renderNotionChildBlocks";
+
+/**
+ * getStaticPaths คือฟังก์ชันพิเศษของ Astro สำหรับการสร้างหน้าเว็บแบบ Static (SSG)
+ * ฟังก์ชันนี้จะถูกเรียกตอน build time เพื่อสร้างหน้าเว็บสำหรับแต่ละบทความ
+ */
+export const getStaticPaths: GetStaticPaths = async () => {
+  // 1. ดึงข้อมูลบทความทั้งหมดจาก Notion
+  const posts = await getAllPosts();
+
+  const paths = [];
+  // 2. วนลูปแต่ละบทความเพื่อเตรียมข้อมูลสำหรับสร้างหน้าเว็บ
+  for (const post of posts) {
+    // ถ้าโพสต์ไม่มี slug (ชื่อที่ใช้ใน URL) ให้ข้ามไป
+    if (!post.slug) continue;
+    
+    // 3. ดึงเนื้อหา (บล็อก) ทั้งหมดของบทความนี้แบบเจาะลึก
+    const blocks = await getBlocksDeep(post.id);
+    // 4. แปลงเนื้อหาจากบล็อกเป็น HTML string
+    const contentHtml = renderBlocksToHtml(blocks);
+
+    // 5. สร้าง object ที่ Astro ต้องการสำหรับแต่ละหน้า
+    paths.push({
+      params: { slug: post.slug }, // กำหนด URL ของหน้า เช่น /blog/my-first-post
+      props: { // ส่งข้อมูลเหล่านี้ไปยัง template ของหน้าเว็บ
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        tags: post.tags,
+        created: post.created,
+        contentHtml, // เนื้อหาที่แปลงเป็น HTML แล้ว
+        cover: post.cover,
+      },
+    });
+  }
+
+  // 6. คืนค่า paths ทั้งหมดเพื่อให้ Astro สร้างหน้าเว็บตามข้อมูลนี้
+  return paths;
+};
+
+// ดึงข้อมูล (props) ที่ส่งมาจาก getStaticPaths
+// เพื่อนำไปใช้ใน template HTML ด้านล่าง
+const {
+  title,
+  description,
+  tags,
+  created,
+  contentHtml,
+  cover,
+} = Astro.props as {
+  title: string;
+  description?: string;
+  tags: string[];
+  created: string;
+  contentHtml: string;
+  cover?: string;
+};
+---
+
+<!-- ส่วนด้านล่างนี้คือ Template ของหน้าเว็บ (HTML) -->
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title} | Astro + Notion</title>
+  </head>
+  <body class="p-8 font-sans max-w-2xl mx-auto">
+    <!-- ลิงก์สำหรับกลับไปยังหน้าแรก -->
+    <a href="/" class="text-blue-600 text-sm hover:underline">&larr; กลับไปหน้าบทความทั้งหมด</a>
+
+    <!-- เนื้อหาหลักของบทความ -->
+    <article class="mt-4">
+      <figure>
+        <!-- แสดงภาพปก ถ้ามี -->
+        {cover && (
+          <img
+            src={cover || ""}
+            alt={title || ""}
+            class="w-full h-64 object-cover rounded mb-6"
+          />
+        )}
+      </figure>
+      
+      <!-- ส่วนหัวของบทความ -->
+      <header>
+        <!-- แสดงชื่อเรื่อง -->
+        <h1 class="text-3xl font-bold">{title}</h1>
+
+        <!-- แสดงวันที่สร้าง จัดรูปแบบเป็นภาษาไทย -->
+        <div class="text-sm text-gray-500 mt-2">
+          {new Date(created).toLocaleString("th-TH", {
+            dateStyle: "long",
+            timeStyle: "short",
+          })}
+        </div>
+
+        <!-- แสดงแท็กทั้งหมดของบทความ -->
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tags && tags.map((tag: string) => (
+            <span class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <!-- แสดงคำอธิบายสั้นๆ ถ้ามี -->
+        {description && (
+          <p class="mt-6 text-lg leading-relaxed text-gray-800">
+            {description}
+          </p>
+        )}
+      </header>
+
+      <!-- ส่วนเนื้อหาของบทความ -->
+      <!-- ใช้ set:html เพื่อแสดงผล HTML ที่เราสร้างมาจากบล็อกของ Notion -->
+      <section
+        class="prose prose-gray max-w-none mt-10 prose-headings:font-semibold prose-headings:text-gray-900 prose-p:text-gray-800 prose-li:text-gray-800"
+        set:html={contentHtml}
+      />
+    </article>
+  </body>
+</html>
