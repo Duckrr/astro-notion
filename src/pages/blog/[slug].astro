@@ -42,7 +42,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         created: post.created,
         contentHtml, // เนื้อหาที่แปลงเป็น HTML แล้ว
         cover: post.cover,
-        slug: post.slug,
       },
     });
   }
@@ -53,7 +52,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 // ดึงข้อมูล (props) ที่ส่งมาจาก getStaticPaths
 // เพื่อนำไปใช้ใน template HTML ด้านล่าง
-const { title, description, tags, created, contentHtml, cover, slug } =
+const { title, description, tags, created, contentHtml, cover } =
   Astro.props as {
     title: string;
     description?: string;
@@ -61,7 +60,6 @@ const { title, description, tags, created, contentHtml, cover, slug } =
     created: string;
     contentHtml: string;
     cover?: string;
-    slug?: string;
   };
 
 const coverImage = await getImage({
@@ -87,8 +85,6 @@ const coverImage = await getImage({
             loading={"eager"}
             decoding={"async"}
             fetchpriority={"high"}
-            transition:name={`cover-${Astro.props.slug ?? ''}`}
-            transition:animate="fade"
           />
         )
       }
