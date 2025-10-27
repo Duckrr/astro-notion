@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image,getImage } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 
 // นำเข้า Type Definition สำหรับ GetStaticPaths จาก Astro
@@ -61,9 +61,17 @@ const { title, description, tags, created, contentHtml, cover } =
     contentHtml: string;
     cover?: string;
   };
+
+const coverImage = await getImage({
+  src: cover as string,
+  width: 1200,
+  height: 600,
+  format: "avif",
+  quality: 80,
+});  
 ---
 
-<Layout title={title} description={description || ""}>
+<Layout title={title} description={description || ""} image={coverImage.src}>
   <article class="max-w-5xl mx-auto space-y-4">
     <figure class="shadow-box rounded-b-2xl overflow-hidden">
       {
