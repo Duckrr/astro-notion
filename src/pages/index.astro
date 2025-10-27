@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
 import WhySection from "../components/Why.astro";
+import StackLogo from "../components/StackLogo.astro";
+import { siteConfig } from "../config/site";
 
 // นำเข้าฟังก์ชันสำหรับดึงข้อมูลบทความทั้งหมดจาก Notion
 import { getAllPosts } from "../lib/notion";
@@ -11,27 +13,14 @@ import { getAllPosts } from "../lib/notion";
 const posts = await getAllPosts();
 ---
 
-<Layout>
+<Layout title={siteConfig.site_title} description={siteConfig.site_description}>
   <section id="hero" class="overflow-hidden relative">
     <ul class="circles">
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
+      {Array.from({ length: 10 }).map((_) => <li />)}
     </ul>
     <div class="px-4 py-16 sm:px-6 sm:py-24 z-10 relative">
       <div class="mx-auto max-w-4xl text-center">
-        <p
-          class="text-sm border border-neutral-200 rounded-2xl px-3 py-1 inline mx-auto"
-        >
-          Astro - Notion
-        </p>
+        <StackLogo />
         <h1 class="leading-tight mt-8">
           เปลี่ยน Notion ให้เป็น Blog สุดเร็วด้วย Astro
         </h1>
@@ -44,7 +33,13 @@ const posts = await getAllPosts();
             aria-label="Click to Notion"
             class="underline-link">Notion</a
           > เป็น Headless CMS จัดการเนื้อหาทั้งหมดใน Notion ที่คุณคุ้นเคย แล้วปล่อยให้
-          Astro สร้างหน้าเว็บที่เร็วและมีประสิทธิภาพ
+          <a
+            href="https://astro.build/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Click to Astro"
+            class="underline-link">Astro</a
+          > สร้างหน้าเว็บที่เร็วและมีประสิทธิภาพ
         </p>
 
         <div class="mt-4 flex justify-center gap-4 sm:mt-6">

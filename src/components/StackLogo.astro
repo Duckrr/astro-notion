@@ -1,0 +1,29 @@
+---
+import { Image } from "astro:assets";
+
+import AstroLogo from "../images/astro-logo.png";
+import NotionLogo from "../images/notion-logo.png";
+import TailwindLogo from "../images/tailwind-logo.png";
+import CloudflareLogo from "../images/cloudflare-logo.png";
+
+const logos = [
+{ src: NotionLogo, alt: "Notion Logo" },
+  { src: AstroLogo, alt: "Astro Logo" },
+  { src: TailwindLogo, alt: "Tailwind CSS Logo" },
+  { src: CloudflareLogo, alt: "Cloudflare Logo" },
+];
+
+---
+
+<div class="flex flex-row gap-2 justify-center items-center">
+  {logos.map((logo) => (
+    <Image
+      src={logo.src}
+      alt={logo.alt}
+      class="h-8 md:h-10 w-auto object-contain"+
+      width={'300'}
+      height={'300'}
+      loading={'eager'}
+    />
+  ))}
+</div>

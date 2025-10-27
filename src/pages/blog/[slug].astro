@@ -1,12 +1,13 @@
 ---
-// นำเข้าไฟล์ CSS ส่วนกลาง
-import "../../global.css";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+
 // นำเข้า Type Definition สำหรับ GetStaticPaths จาก Astro
-import type { GetStaticPaths } from 'astro';
+import type { GetStaticPaths } from "astro";
 // นำเข้าฟังก์ชันสำหรับดึงข้อมูลโพสต์ทั้งหมดจาก Notion
-import { getAllPosts } from '../../lib/notion';
+import { getAllPosts } from "../../lib/notion";
 // นำเข้าฟังก์ชันสำหรับแปลงบล็อกของ Notion เป็น HTML
-import { renderBlocksToHtml } from '../../lib/renderNotionBlocks';
+import { renderBlocksToHtml } from "../../lib/renderNotionBlocks";
 // นำเข้าฟังก์ชันสำหรับดึงบล็อกทั้งหมดแบบเจาะลึก (รวมบล็อกลูก)
 import { getBlocksDeep } from "../../lib/renderNotionChildBlocks";
 
@@ -23,7 +24,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   for (const post of posts) {
     // ถ้าโพสต์ไม่มี slug (ชื่อที่ใช้ใน URL) ให้ข้ามไป
     if (!post.slug) continue;
-    
+
     // 3. ดึงเนื้อหา (บล็อก) ทั้งหมดของบทความนี้แบบเจาะลึก
     const blocks = await getBlocksDeep(post.id);
     // 4. แปลงเนื้อหาจากบล็อกเป็น HTML string
@@ -32,7 +33,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     // 5. สร้าง object ที่ Astro ต้องการสำหรับแต่ละหน้า
     paths.push({
       params: { slug: post.slug }, // กำหนด URL ของหน้า เช่น /blog/my-first-post
-      props: { // ส่งข้อมูลเหล่านี้ไปยัง template ของหน้าเว็บ
+      props: {
+        // ส่งข้อมูลเหล่านี้ไปยัง template ของหน้าเว็บ
         id: post.id,
         title: post.title,
         description: post.description,
@@ -50,82 +52,72 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 // ดึงข้อมูล (props) ที่ส่งมาจาก getStaticPaths
 // เพื่อนำไปใช้ใน template HTML ด้านล่าง
-const {
-  title,
-  description,
-  tags,
-  created,
-  contentHtml,
-  cover,
-} = Astro.props as {
-  title: string;
-  description?: string;
-  tags: string[];
-  created: string;
-  contentHtml: string;
-  cover?: string;
-};
+const { title, description, tags, created, contentHtml, cover } =
+  Astro.props as {
+    title: string;
+    description?: string;
+    tags: string[];
+    created: string;
+    contentHtml: string;
+    cover?: string;
+  };
 ---
 
-<!-- ส่วนด้านล่างนี้คือ Template ของหน้าเว็บ (HTML) -->
-<html lang="th">
-  <head>
-    <meta charset="utf-8" />
-    <title>{title} | Astro + Notion</title>
-  </head>
-  <body class="p-8 font-sans max-w-2xl mx-auto">
-    <!-- ลิงก์สำหรับกลับไปยังหน้าแรก -->
-    <a href="/" class="text-blue-600 text-sm hover:underline">&larr; กลับไปหน้าบทความทั้งหมด</a>
-
-    <!-- เนื้อหาหลักของบทความ -->
-    <article class="mt-4">
-      <figure>
-        <!-- แสดงภาพปก ถ้ามี -->
-        {cover && (
-          <img
-            src={cover || ""}
-            alt={title || ""}
-            class="w-full h-64 object-cover rounded mb-6"
+<Layout title={title} description={description || ""}>
+  <article class="max-w-5xl mx-auto space-y-4">
+    <figure class="shadow-box rounded-b-2xl overflow-hidden">
+      {
+        cover && (
+          <Image
+            src={cover}
+            width={1200}
+            height={600}
+            alt={title}
+            class="w-full aspect-video object-cover"
+            loading={"eager"}
+            decoding={"async"}
+            fetchpriority={"high"}
           />
-        )}
-      </figure>
-      
-      <!-- ส่วนหัวของบทความ -->
-      <header>
-        <!-- แสดงชื่อเรื่อง -->
-        <h1 class="text-3xl font-bold">{title}</h1>
-
-        <!-- แสดงวันที่สร้าง จัดรูปแบบเป็นภาษาไทย -->
-        <div class="text-sm text-gray-500 mt-2">
-          {new Date(created).toLocaleString("th-TH", {
+        )
+      }
+    </figure>
+    <div class="text-center my-8">
+      <time>
+        {
+          new Date(created).toLocaleString("th-TH", {
             dateStyle: "long",
-            timeStyle: "short",
-          })}
-        </div>
+          })
+        }
+      </time>
+      <h1 class="mt-2 text-2xl md:text-3xl">{title}</h1>
+      <div class="mt-2 space-x-2 flex items-center justify-center">
+        <span>by</span><img
+          src="https://theduckrr.com/_astro/profile-nook.BMl1_Saq_ZyJnja.avif"
+          alt="Avatar"
+          class="inline-block w-8 h-8 border border-neutral-400 rounded-full"
+        />
+        <span>Nook - The Duckrr </span>
+      </div>
+    </div>
 
-        <!-- แสดงแท็กทั้งหมดของบทความ -->
-        <div class="mt-4 flex flex-wrap gap-2">
-          {tags && tags.map((tag: string) => (
-            <span class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700">
+    <hr class="my-12 border-neutral-200" />
+
+    <!-- ส่วนเนื้อหาของบทความ -->
+    <!-- ใช้ set:html เพื่อแสดงผล HTML ที่เราสร้างมาจากบล็อกของ Notion -->
+    <section class="prose max-w-3xl mx-auto px-2" set:html={contentHtml} />
+
+    <hr class="my-12 border-neutral-200" />
+
+    <div class="mt-4 flex flex-row items-center justify-start flex-wrap gap-2 mb-16">
+      <span>Tags:</span>
+      {
+        tags &&
+          tags.map((tag: string) => (
+            <a href={`/blog/tag/${tag}`} class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700">
               {tag}
-            </span>
-          ))}
-        </div>
-
-        <!-- แสดงคำอธิบายสั้นๆ ถ้ามี -->
-        {description && (
-          <p class="mt-6 text-lg leading-relaxed text-gray-800">
-            {description}
-          </p>
-        )}
-      </header>
-
-      <!-- ส่วนเนื้อหาของบทความ -->
-      <!-- ใช้ set:html เพื่อแสดงผล HTML ที่เราสร้างมาจากบล็อกของ Notion -->
-      <section
-        class="prose prose-gray max-w-none mt-10 prose-headings:font-semibold prose-headings:text-gray-900 prose-p:text-gray-800 prose-li:text-gray-800"
-        set:html={contentHtml}
-      />
-    </article>
-  </body>
-</html>
+            </a>
+          ))
+      }
+    </div>
+  </article>
+</Layout>

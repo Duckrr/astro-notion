@@ -1,8 +1,14 @@
 ---
 import "../global.css";
-import { siteConfig } from "../config/site";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props as Props;
 ---
 
 <html lang="th">
@@ -10,8 +16,8 @@ import Footer from "../components/Footer.astro";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{siteConfig.site_title}</title>
-    <meta name="description" content={siteConfig.site_description} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="antialiased bg-neutral-100">

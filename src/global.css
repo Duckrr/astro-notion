@@ -29,6 +29,6 @@
     @apply mx-auto !max-w-7xl;
   }
   a.underline-link {
-    @apply hover:underline hover:underline-offset-2 hover:decoration-blue-500 ;
+    @apply hover:underline decoration-2 hover:underline-offset-4 hover:decoration-blue-500 ;
   }
 }
