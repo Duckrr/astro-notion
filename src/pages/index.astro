@@ -89,6 +89,8 @@ const posts = await getAllPosts();
                   width={800}
                   height={400}
                   class="aspect-video object-cover rounded-md group-hover:scale-105 transition-all duration-700 ease-in-out group-hover:brightness-90"
+                  transition:name={`cover-${post.slug}`}
+                  transition:animate="fade"
                 />
               </figure>
             ) : null}

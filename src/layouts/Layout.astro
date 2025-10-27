@@ -2,6 +2,7 @@
 import "../global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -12,7 +13,7 @@ interface Props {
 const { title, description, image = "/og.png" } = Astro.props as Props;
 ---
 
-<html lang="th">
+<html lang="th" transition:name="root" transition:animate="none">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -45,6 +46,8 @@ const { title, description, image = "/og.png" } = Astro.props as Props;
 
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <ClientRouter />
+
     <!-- Google Tag Manager -->
     <script is:inline>
       (function (w, d, s, l, i) {
@@ -62,7 +65,7 @@ const { title, description, image = "/og.png" } = Astro.props as Props;
   </head>
   <body class="antialiased bg-neutral-100">
     <Header />
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8" transition:animate="fade">
       <slot />
     </main>
     <Footer />
