@@ -55,7 +55,7 @@ import siteLogo from "../images/site-logo.png";
 </header>
 
 <script is:inline>
-  document.addEventListener("DOMContentLoaded", () => {
+  function initLogoShrink() {
     const logoWrap = document.getElementById("site-logo");
     if (!logoWrap) return;
 
@@ -78,7 +78,15 @@ import siteLogo from "../images/site-logo.png";
       }
     };
 
-    updateWidthClass();
+    window.removeEventListener("scroll", updateWidthClass);
     window.addEventListener("scroll", updateWidthClass, { passive: true });
-  });
+
+    updateWidthClass();
+  }
+
+  initLogoShrink();
+
+  window.addEventListener("astro:page-load", initLogoShrink);
 </script>
+
+
