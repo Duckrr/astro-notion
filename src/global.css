@@ -26,7 +26,7 @@
     @apply text-xl lg:text-2xl font-bold text-primary;
   }
   .container {
-    @apply mx-auto !max-w-7xl;
+    @apply mx-auto max-w-7xl!;
   }
   a.underline-link {
     @apply hover:underline decoration-2 hover:underline-offset-4 hover:decoration-blue-500 ;

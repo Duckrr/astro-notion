@@ -9,7 +9,7 @@ interface Props {
   image?: string;
 }
 
-const { title, description, image = '/og.png' } = Astro.props as Props;
+const { title, description, image = "/og.png" } = Astro.props as Props;
 ---
 
 <html lang="th">
@@ -20,23 +20,45 @@ const { title, description, image = '/og.png' } = Astro.props as Props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={Astro.site ?? '/'} />
+    <link rel="canonical" href={Astro.site ?? "/"} />
     <meta name="robots" content="index, follow" />
-    <meta name="author" content=""/>
+    <meta name="author" content="" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={Astro.site ? new URL(image, Astro.site).href : image} />
-    <meta property="og:url" content={Astro.site ?? '/'} />
+    <meta
+      property="og:image"
+      content={Astro.site ? new URL(image, Astro.site).href : image}
+    />
+    <meta property="og:url" content={Astro.site ?? "/"} />
     <meta property="og:locale" content="th_TH" />
     <meta property="og:site_name" content={title} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={Astro.site ? new URL(image, Astro.site).href : image} />
+    <meta
+      name="twitter:image"
+      content={Astro.site ? new URL(image, Astro.site).href : image}
+    />
 
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Google Tag Manager -->
+    <script is:inline>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-NTBW436C");
+    </script>
+    <!-- End Google Tag Manager -->
   </head>
   <body class="antialiased bg-neutral-100">
     <Header />
@@ -44,5 +66,14 @@ const { title, description, image = '/og.png' } = Astro.props as Props;
       <slot />
     </main>
     <Footer />
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-NTBW436C"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"></iframe></noscript
+    >
+    <!-- End Google Tag Manager (noscript) -->
   </body>
 </html>

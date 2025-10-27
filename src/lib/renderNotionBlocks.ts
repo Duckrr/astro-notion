@@ -508,7 +508,7 @@ export function renderBlocksToHtml(blocks: any[]): string {
         );
       } else {
         htmlParts.push(
-          `<div class="my-6 rounded-md border border-gray-200 bg-gray-50 p-4 text-sm break-words">
+          `<div class="my-6 rounded-md border border-gray-200 bg-gray-50 p-4 text-sm wrap-break-words">
             <a
               href="${url}"
               target="_blank"
