@@ -51,7 +51,7 @@ export async function getAllPosts(): Promise<BlogPostSummary[]> {
       checkbox: { equals: true },
     },
     sorts: [
-      { property: "Created", direction: "descending" },
+      { property: "Created", direction: "ascending" }, // เรียงลำดับโดยใช้ 'ascending' สำหรับวันที่สร้างจากเก่าไปใหม่ล่าสุด และ 'descending' สำหรับใหม่ไปเก่า
     ],
   });
 
