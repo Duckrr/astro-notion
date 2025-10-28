@@ -1,0 +1,68 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { siteConfig } from "../../config/site";
+import { getAllPosts } from "../../lib/notion";
+
+const posts = await getAllPosts();
+---
+
+<Layout title={siteConfig.site_title} description={siteConfig.site_description}>
+  <section id="hero" class="overflow-hidden relative mb-16">
+    <section id="docs" class="py-8">
+      <div class="flex flex-row items-center justify-start gap-2 mt-10 mb-4">
+        <span
+          class="w-10 h-10 bg-primary text-white rounded-full items-center justify-center text-xl inline-flex"
+          >✱</span
+        ><h1>{siteConfig.site_title}</h1>
+      </div>
+      <p>{siteConfig.site_description}</p>
+      <hr class="my-12 border-neutral-200" />
+      <div class="article grid md:grid-cols-3 gap-6">
+        {
+          posts.map((post) => (
+            <a
+              href={`/blog/${post.slug}`}
+              class="group flex flex-col gap-4 p-0 justify-start items-center rounded-lg overflow-hidden border border-neutral-200 hover:shadow-lg transition-shadow"
+            >
+              {post.cover ? (
+                <figure class="shrink-0 w-full relative overflow-hidden">
+                  <Image
+                    src={post.cover}
+                    alt={post.title}
+                    width={800}
+                    height={400}
+                    class="aspect-video object-cover group-hover:scale-105 transition-all duration-700 ease-in-out group-hover:brightness-90"
+                  />
+                </figure>
+              ) : null}
+              <div class="relative overflow-hidden px-4">
+                <time class="text-xs text-gray-500">
+                  {new Date(post.created).toLocaleString("th-TH", {
+                    dateStyle: "long",
+                  })}
+                </time>
+                <h3 class="text-lg font-semibold text-primary md:text-xl leading-tight mt-2">
+                  {post.title}
+                </h3>
+                <p class="mt-2 text-gray-600 line-clamp-3">
+                  {post.description}
+                </p>
+                <div class="my-4 flex flex-row items-center justify-start flex-wrap gap-2">
+                  {post.tags &&
+                    post.tags.map((tag: string) => (
+                      <span
+                        class="inline-block rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </section></Layout
+>
