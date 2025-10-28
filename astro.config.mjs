@@ -20,7 +20,7 @@ export default defineConfig({
       {
         protocol: "https",
         hostname: "www.notion.so",
-      },
+      }
     ],
   },
   integrations: [robotsTxt(), sitemap()],

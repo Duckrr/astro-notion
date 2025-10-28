@@ -1,16 +1,16 @@
 ---
 import { Image } from "astro:assets";
-import siteLogo from "../images/site-logo.png";
+import siteLogo from "../images/nookjourney-logo-w.png";
 
 const menuItems = [
-  {
-    title: "Getting Started",
-    href: "/blog/getting-started",
-  },
   // {
-  //   title: "About Us",
-  //   href: "/about-us",
-  // }
+  //   title: "Getting Started",
+  //   href: "/blog/getting-started",
+  // },
+  {
+    title: "About Us",
+    href: "/about-us",
+  }
 ];
 
 const menuButton = {
@@ -31,7 +31,7 @@ const menuButton = {
       <Image
         src={siteLogo}
         alt="Site Logo"
-        class="site-logo w-full"
+        class="site-logo w-full py-4"
         format="avif"
         quality={"mid"}
         loading={"eager"}
@@ -55,7 +55,7 @@ const menuButton = {
             ))
           : null
       }
-      {
+      <!-- {
         menuButton ? (
           <li class="group">
             <a
@@ -79,7 +79,7 @@ const menuButton = {
             </a>
           </li>
         ) : null
-      }
+      } -->
     </ul>
   </nav>
 </header>

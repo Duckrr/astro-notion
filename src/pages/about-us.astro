@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets"
+import HeroImage from "../images/aboutus.png"
+import Layout from "../layouts/Layout.astro"
+---
+
+<Layout title="เกี่ยวกับเรา" description="นุก คือใคร? และบล็ิอคนี้เกี่ยวกับอะไร?">
+  <section class="py-16">
+    <figure class="w-full mb-8">
+      <Image
+        src={HeroImage}
+        alt="นุก ผู้ก่อตั้ง Nook Journey Blog"
+        class="aspect-video rounded-md grayscale-100 object-cover w-full"
+        width={1200}
+        height={1200}
+        format="avif"
+        quality={"mid"}
+        loading={"eager"}
+        decoding={"async"}
+        fetchpriority={"high"}
+      />
+    </figure>
+    <h1 class="text-3xl font-bold mb-6">เกี่ยวกับเรา</h1>
+    <p class="mb-4">
+      สวัสดีครับ! ผมชื่อ "นุก" และผมเป็นผู้ก่อตั้งบล็อก Nook Journey Blog แห่งนี้
+    </p>
+    <p class="mb-4">
+      บล็อกนี้ถูกสร้างขึ้นเพื่อแบ่งปันประสบการณ์ การเดินทาง และเรื่องราวต่างๆ ที่ผมได้พบเจอในชีวิต ไม่ว่าจะเป็นการท่องเที่ยว การเรียนรู้ หรือแม้กระทั่งเรื่องราวเล็กๆ น้อยๆ ที่มีความหมายสำหรับผม
+    </p>
+    <p class="mb-4">
+      ผมหวังว่าบล็อกนี้จะเป็นแหล่งข้อมูลและแรงบันดาลใจให้กับทุกคนที่เข้ามาอ่าน และผมยินดีที่จะรับฟังความคิดเห็นหรือข้อเสนอแนะจากผู้อ่านทุกท่าน
+    </p>
+    <p class="mb-4">
+      ขอบคุณที่มาเยี่ยมชม Nook Journey Blog และหวังว่าจะได้พบกันในบทความถัดไป!
+    </p>
+  </section>
+    
+</Layout>

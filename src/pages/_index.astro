@@ -1,0 +1,227 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import WhySection from "../components/Why.astro";
+import StackLogo from "../components/StackLogo.astro";
+import { siteConfig } from "../config/site";
+
+// นำเข้าฟังก์ชันสำหรับดึงข้อมูลบทความทั้งหมดจาก Notion
+import { getAllPosts } from "../lib/notion";
+
+// เรียกใช้ฟังก์ชัน getAllPosts เพื่อดึงข้อมูลบทความทั้งหมด
+// และเก็บผลลัพธ์ไว้ในตัวแปร posts
+const posts = await getAllPosts();
+---
+
+<Layout title={siteConfig.site_title} description={siteConfig.site_description}>
+  <section id="hero" class="overflow-hidden relative">
+    <ul class="circles">
+      {Array.from({ length: 10 }).map((_) => <li />)}
+    </ul>
+    <div class="px-4 py-16 sm:px-6 sm:py-24 z-10 relative">
+      <div class="mx-auto max-w-4xl text-center">
+        <StackLogo />
+        <h1 class="leading-tight mt-8">
+          เปลี่ยน Notion ให้เป็น Blog สุดเร็วด้วย Astro
+        </h1>
+
+        <p class="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed">
+          Starter template สำหรับสร้างบล็อกด้วย Astro โดยใช้ <a
+            href="https://notion.so"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Click to Notion"
+            class="underline-link">Notion</a
+          > เป็น Headless CMS จัดการเนื้อหาทั้งหมดใน Notion ที่คุณคุ้นเคย แล้วปล่อยให้
+          <a
+            href="https://astro.build/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Click to Astro"
+            class="underline-link">Astro</a
+          > สร้างหน้าเว็บที่เร็วและมีประสิทธิภาพ
+        </p>
+
+        <div class="mt-4 flex justify-center gap-4 sm:mt-6">
+          <a
+            class="button font-bold inline-block rounded bg-blue-500 px-5 py-3 text-white shadow-lg/10 transition-colors hover:bg-blue-600"
+            href="/blog/getting-started"
+          >
+            Get Started
+          </a>
+
+          <a
+            class="button font-bold inline-block rounded bg-blue-100/60 px-5 py-3 text-blue-500 shadow-lg/10 transition-colors hover:bg-blue-100"
+            href="https://github.com/Duckrr/astro-notion"
+          >
+            View Source Code
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="mb-12 border-neutral-200" />
+
+  <WhySection />
+
+  <hr class="my-12 border-neutral-200" />
+
+  <section id="docs" class="py-8">
+    <div class="flex flex-row items-center justify-start gap-2 mb-8">
+      <span
+        class="w-10 h-10 bg-primary text-white rounded-full items-center justify-center text-xl inline-flex"
+        >✱</span
+      ><h2>คู่มือการใช้งาน</h2>
+    </div>
+    <div class="article grid grid-cols-1 gap-6">
+      {
+        posts.map((post) => (
+          <a
+            href={`/blog/${post.slug}`}
+            class="group flex flex-col md:flex-row gap-6 p-2 md:p-6 justify-start items-center rounded-lg border border-neutral-200 hover:shadow-lg transition-shadow"
+          >
+            {post.cover ? (
+              <figure class="shrink-0 w-full max-w-sm relative overflow-hidden rounded-sm">
+                <Image
+                  src={post.cover}
+                  alt={post.title}
+                  width={800}
+                  height={400}
+                  class="aspect-video object-cover rounded-md group-hover:scale-105 transition-all duration-700 ease-in-out group-hover:brightness-90"
+                />
+              </figure>
+            ) : null}
+            <div class="relative overflow-hidden">
+              <h3 class="text-lg font-semibold text-primary md:text-2xl leading-snug">
+                {post.title}
+              </h3>
+              <p class="mt-1 text-gray-600 line-clamp-3">{post.description}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<style is:inline>
+  .article .group:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+
+  @media (max-width: 768px) {
+    .article .group:nth-child(even) {
+      flex-direction: column;
+    }
+  }
+
+  .circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+  }
+
+  .circles li:nth-child(1) {
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+  }
+
+  .circles li:nth-child(2) {
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+  }
+
+  .circles li:nth-child(3) {
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+  }
+
+  .circles li:nth-child(4) {
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+  }
+
+  .circles li:nth-child(5) {
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+  }
+
+  .circles li:nth-child(6) {
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+  }
+
+  .circles li:nth-child(7) {
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+  }
+
+  .circles li:nth-child(8) {
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+  }
+
+  .circles li:nth-child(9) {
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+  }
+
+  .circles li:nth-child(10) {
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+  }
+
+  @keyframes animate {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+      border-radius: 0;
+    }
+
+    100% {
+      transform: translateY(-1000px) rotate(720deg);
+      opacity: 0;
+      border-radius: 50%;
+    }
+  }
+</style>
